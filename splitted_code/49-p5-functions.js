@@ -2,11 +2,13 @@
 
 // Define the four colors for your gradient (add these before setup function)
 const gradientColors = [
-    { r: 0, g: 0, b: 0 },       // Color 1: Black
-    { r: 255, g: 0, b: 100 },   // Color 2: Pink/Red
-    { r: 0, g: 150, b: 255 },   // Color 3: Blue
-    { r: 255, g: 255, b: 0 },    // Color 4: Yellow
-    { r: 255, g: 255, b: 255 }  // Color 5: White
+    { r: 0, g: 0, b: 0 },       //  Black
+    { r: 50, g: 50, b: 50 },  // grey
+    { r: 255, g: 255, b: 255 },  // White
+    { r: 255, g: 0, b: 100 },   // Red
+    { r: 255, g: 255, b: 0 },    // Yellow
+    { r: 0, g: 150, b: 255 },   // Blue
+    { r: 0, g: 0, b: 0 },    //  Black
 ];
   
 // Function to interpolate between colors in the gradient

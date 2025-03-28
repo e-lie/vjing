@@ -1,5 +1,8 @@
 ///////////////////////// SHAPE GRID
 
+
+// class
+
 function sphereSize(factor=1, speed=1){
     //return height/3+(frameCount%(height/6))
     return (Math.sin(frameCount*(speed/100))*100 +200)*factor

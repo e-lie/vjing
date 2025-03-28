@@ -11,5 +11,5 @@
     - charger les images de Rose
 
 - map MIDI in js
-    - change background color
+    - [x] change background color
     - modulateScale fader

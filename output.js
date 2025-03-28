@@ -25,7 +25,7 @@ var cc=Array(128).fill(0.5)
 getMIDIMessage = function(midiMessage) {
     var arr = midiMessage.data    
     var index = arr[1]
-    console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
+    //console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
     var val = (arr[2]+1)/128.0  // normalize CC values to 0.0 - 1.0
     cc[index]=val
 }
@@ -383,11 +383,13 @@ function sphereGrid(sphereSize=100, gridX=5, gridY=5, gridZ=5, spacing=200){
 
 // Define the four colors for your gradient (add these before setup function)
 const gradientColors = [
-    { r: 0, g: 0, b: 0 },       // Color 1: Black
-    { r: 255, g: 0, b: 100 },   // Color 2: Pink/Red
-    { r: 0, g: 150, b: 255 },   // Color 3: Blue
-    { r: 255, g: 255, b: 0 },    // Color 4: Yellow
-    { r: 255, g: 255, b: 255 }  // Color 5: White
+    { r: 0, g: 0, b: 0 },       //  Black
+    { r: 50, g: 50, b: 50 },  // grey
+    { r: 255, g: 255, b: 255 },  // White
+    { r: 255, g: 0, b: 100 },   // Red
+    { r: 255, g: 255, b: 0 },    // Yellow
+    { r: 0, g: 150, b: 255 },   // Blue
+    { r: 0, g: 0, b: 0 },    //  Black
 ];
   
 // Function to interpolate between colors in the gradient
@@ -427,18 +429,21 @@ H.pd(.5)
 
 
 // Hydra video init
-s0.initVideo("https://media.giphy.com/media/AS9LIFttYzkc0/giphy.mp4")
+//s0.initVideo("https://media.giphy.com/media/AS9LIFttYzkc0/giphy.mp4")
 
 // Virtual Camera
-s1.initCam()
+s1.initCam(0)
+s2.initCam(1)
 
-src(s1).modulate(noize(3), .1).thresh(.2).out()
+src(s2)
+//.modulate(noize(3), .1)
+//.thresh(.2)
+.out()
 
 //noize(30, 2).thresh(()=>sin(time)).mult(osc(40, 1, [.5,2].smooth()).colorama(.1).modulate(noize())).out()
 
 //noize(3, 2).modulate(noize(), window.grad1()).out()
 
-//solid(()=>cc[56]).out()
 
 ///////////////////////////// MAIN P5JS code
 
@@ -481,15 +486,18 @@ synth.s0.initP5()
 synth.s1.initCam()
 
 synth.src(synth.s0)
-    //.add(src(synth.s1),.8)
-	//.modulateScale(synth.src(synth.o0).scale(1.01), [0,2].fast(0.1).smooth())
+  .add(src(synth.s1),()=>fader3())
 	//.modulateRotate(synth.src(synth.o0), [0,2].fast(1).smooth())
 	//.thresh([.2,.7].smooth())
 	//.modulate(osc(8,.2),.03)
 	//.brightness(.2)
 	//.contrast(3)
-	.out()
-
+  .modulateScale(
+    synth.src(synth.o0)
+    .scale(1.01),
+    ()=>fader2(),
+  )
+.out()
 
 
 
