@@ -1,0 +1,9 @@
+{
+    "fileGroups": [{
+        "groupName": "JScombine",
+        "outputFileName": "output.js",
+        "fileGlobs": [
+            "**/*.js"
+        ]
+    }]
+}
