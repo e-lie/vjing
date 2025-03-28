@@ -1,6 +1,10 @@
 function draw() {
     clear()
-    background(0)
+
+    // background color from gradient with midi cc 23
+    const bgColor = getBGColor(fader1());
+    background(bgColor.r, bgColor.g, bgColor.b);
+
     orbitControl(1)
     //rotateY(radians(frameCount/1))
 
