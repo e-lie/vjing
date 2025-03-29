@@ -14,10 +14,12 @@ class Creatures{
       }
     }
     draw(){
+      push()
       translate(-windowWidth/2,-windowHeight/2);
       for (let i=0; i<this.numCreatures; i++) {
         this.creatures[i].update();
         this.creatures[i].display();
       }
+      pop()
     }
 }

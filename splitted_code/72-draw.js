@@ -14,8 +14,18 @@ function draw() {
     //sphere(sphereSize(), 64)
     //sphereGrid(sphereSize(1, 3), 2, 2, 2, spacing=700)
 
-    lescreatures.draw()
-    shapeMagrid.scaleSpeed=1
-    shapeMagrid.scaleFactor=1
+    if (knob11() > 0.05) {
+        lescreatures.draw()
+    }
+
+    shapeMagrid.numX=1
+    shapeMagrid.numY=1
+    shapeMagrid.numZ=1
+    shapeMagrid.size=200
+    shapeMagrid.spacing=700
+    shapeMagrid.scaleSpeed=0
+    shapeMagrid.scaleFactor=knob21()*3
+    shapeMagrid.rotSpeed=knob22()*3
+    shapeMagrid.shape="sphere"
     shapeMagrid.display()
 }

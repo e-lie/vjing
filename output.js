@@ -340,11 +340,13 @@ class Creatures{
       }
     }
     draw(){
+      push()
       translate(-windowWidth/2,-windowHeight/2);
       for (let i=0; i<this.numCreatures; i++) {
         this.creatures[i].update();
         this.creatures[i].display();
       }
+      pop()
     }
 }
 
@@ -370,6 +372,10 @@ class ShapeGrid {
     this.shape = shape;
     this.res = res;
     this.spacing = spacing;
+    // Add rotation properties
+    this.rotX = 0;
+    this.rotY = 0;
+    this.rotZ = 0;
   }
 
   shapeSize(){
@@ -377,19 +383,37 @@ class ShapeGrid {
     return (Math.sin(frameCount*(this.scaleSpeed/100))*this.size + 2*this.size)*this.scaleFactor
   }
 
+  // Update rotation values based on speed and MIDI control
+  updateRotation() {
+    // Auto-rotation based on rotSpeed
+    this.rotX += this.rotSpeed * 0.01;
+    this.rotY += this.rotSpeed * 0.015;
+    this.rotZ += this.rotSpeed * 0.005;
+    
+    // Optional: Control rotation with MIDI
+    // Uncomment and adjust CC numbers as needed
+    // this.rotX = fader3() * TWO_PI; // Map fader to 0-2π
+    // this.rotY = fader4() * TWO_PI;
+    // this.rotZ = fader5() * TWO_PI;
+  }
+
   display(){
+    this.updateRotation();
     let offset = (this.numX - 1) * this.spacing / 2
     for (let x = 0; x < this.numX; x++) {
       for (let y = 0; y < this.numY; y++) {
         for (let z = 0; z < this.numZ; z++) {
           push();
           // Positionner chaque sphère
-          translate(windowWidth/2, windowHeight/2)
           translate(
             x * this.spacing - offset,
             y * this.spacing - offset,
             z * this.spacing - offset
           );
+          // Apply rotation to each shape
+          rotateX(this.rotX);
+          rotateY(this.rotY);
+          rotateZ(this.rotZ);
           texture(H.get())
           // Couleur basée sur la position
           // let r = map(x, 0, this.numX - 1, 50, 255)
@@ -466,7 +490,7 @@ H.pd(.5)
 s1.initCam(0)
 s2.initCam(1)
 
-src(s1)
+src(s1).blend(src(s2), ()=>knob31())
 //.modulate(noize(3), .1)
 //.thresh(.2)
 .out()
@@ -511,9 +535,19 @@ function draw() {
     //sphere(sphereSize(), 64)
     //sphereGrid(sphereSize(1, 3), 2, 2, 2, spacing=700)
 
-    lescreatures.draw()
-    shapeMagrid.scaleSpeed=20
-    shapeMagrid.scaleFactor=5
+    if (knob11() > 0.05) {
+        lescreatures.draw()
+    }
+
+    shapeMagrid.numX=1
+    shapeMagrid.numY=1
+    shapeMagrid.numZ=1
+    shapeMagrid.size=200
+    shapeMagrid.spacing=700
+    shapeMagrid.scaleSpeed=0
+    shapeMagrid.scaleFactor=knob21()*3
+    shapeMagrid.rotSpeed=knob22()*3
+    shapeMagrid.shape="sphere"
     shapeMagrid.display()
 }
 
@@ -523,18 +557,22 @@ var H2 = HY5.hydra('h2', 'synth')
 H2.pixelDensity(2)
 H2.zIndex(2)
 synth.s0.initP5()
-synth.s1.initCam()
+synth.s1.initCam(0)
+synth.s2.initCam(1)
+
 
 synth.src(synth.s0)
-  .add(
-  	src(synth.s2).blend(src(synth.s1), ()=>fader4()),
+  .blend(// mix p5, vjing, and webcam with fader3 and knob31
+  	src(synth.s0)
+    .blend(src(synth.s1), 1)
+    .blend(src(synth.s2), ()=>knob31()),
   	()=>fader3()
   )
 	//.modulateRotate(synth.src(synth.o0), [0,2].fast(1).smooth())
 	//.thresh([.2,.7].smooth())
 	//.modulate(osc(8,.2),.03)
 	//.brightness(.2)
-  .contrast(()=>fader5()*3)
+  //.contrast(1)
   .modulateScale(
     synth.src(synth.o0)
     .scale(1.01),

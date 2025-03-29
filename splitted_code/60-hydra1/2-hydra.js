@@ -9,7 +9,7 @@
 s1.initCam(0)
 s2.initCam(1)
 
-src(s1)
+src(s1).blend(src(s2), ()=>knob31())
 //.modulate(noize(3), .1)
 //.thresh(.2)
 .out()
