@@ -15,5 +15,7 @@ function draw() {
     //sphereGrid(sphereSize(1, 3), 2, 2, 2, spacing=700)
 
     lescreatures.draw()
+    shapeMagrid.scaleSpeed=1
+    shapeMagrid.scaleFactor=1
     shapeMagrid.display()
 }

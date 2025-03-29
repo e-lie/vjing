@@ -3,15 +3,15 @@
 
 class ShapeGrid {
   constructor(
-    numX=1, numY=1, numZ=1, shape="sphere", size=100, spacing=800, texture=null,
-    rotSpeed=0, scaleSpeed=0, scaleFactor=1,
+    numX=1, numY=1, numZ=1, shape="sphere", size=100, spacing=800,
+    scaleSpeed=0, scaleFactor=1,rotSpeed=0, 
     sizeRand=0, posRand=0, res=1
   ){
     this.numX = numX;
     this.numY = numY;
     this.numZ = numZ;
     this.size = size;
-    this.texture = texture;
+    //this.texture = texture;
     this.rotSpeed = rotSpeed;
     this.scaleSpeed = scaleSpeed;
     this.scaleFactor = scaleFactor;
@@ -19,12 +19,12 @@ class ShapeGrid {
     this.posRand = posRand;
     this.shape = shape;
     this.res = res;
-    this.spacing = this.size *2;
+    this.spacing = spacing;
   }
 
   shapeSize(){
     //return height/3+(frameCount%(height/6))
-    return (Math.sin(frameCount*(this.scaleSpeed/100))*100 +200)*this.scaleFactor
+    return (Math.sin(frameCount*(this.scaleSpeed/100))*this.size + 2*this.size)*this.scaleFactor
   }
 
   display(){
@@ -40,20 +40,16 @@ class ShapeGrid {
             y * this.spacing - offset,
             z * this.spacing - offset
           );
-          if (this.texture !== null) {
-            //texture(H.get())
-            texture(this.texture())
-          } else {
-            // Couleur basée sur la position
-            let r = map(x, 0, this.numX - 1, 50, 255)
-            let g = map(y, 0, this.numY - 1, 50, 255)
-            let b = map(z, 0, this.numZ - 1, 50, 255)
-            fill(r, g, b)
-          }
+          texture(H.get())
+          // Couleur basée sur la position
+          // let r = map(x, 0, this.numX - 1, 50, 255)
+          // let g = map(y, 0, this.numY - 1, 50, 255)
+          // let b = map(z, 0, this.numZ - 1, 50, 255)
+          // fill(r, g, b)
           if (this.shape == "sphere"){
             sphere(this.shapeSize(), 32)
           } else {
-            cube()
+            box(this.shapeSize())
           }
           pop()
         }

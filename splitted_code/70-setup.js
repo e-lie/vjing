@@ -7,7 +7,13 @@ let shapeMagrid
 
 function setup() {
     lescreatures = new Creatures(20)
-    shapeMagrid = new ShapeGrid(3,3,3,"sphere", 50, 800)
+    shapeMagrid = new ShapeGrid(
+    	2,2,2,"cube",
+    	50, 700,
+    	1,//scaleSpeed
+    	2,//scaleFactor
+    	0,//rotSpeed
+    )
     createCanvas(windowWidth, windowHeight, WEBGL)
     P5.zIndex(1)
     normalMaterial()
