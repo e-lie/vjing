@@ -20,7 +20,7 @@ function onMIDIFailure() {
 }
 
 //create an array to hold our cc values and init to a normalized value
-var cc=Array(128).fill(0.5)
+var cc=Array(128).fill(0)
 
 getMIDIMessage = function(midiMessage) {
     var arr = midiMessage.data    
@@ -350,31 +350,63 @@ class Creatures{
 
 ///////////////////////// SHAPE GRID
 
-function sphereSize(factor=1, speed=1){
+
+class ShapeGrid {
+  constructor(
+    numX=1, numY=1, numZ=1, shape="sphere", size=100, spacing=800, texture=null,
+    rotSpeed=0, scaleSpeed=0, scaleFactor=1,
+    sizeRand=0, posRand=0, res=1
+  ){
+    this.numX = numX;
+    this.numY = numY;
+    this.numZ = numZ;
+    this.size = size;
+    this.texture = texture;
+    this.rotSpeed = rotSpeed;
+    this.scaleSpeed = scaleSpeed;
+    this.scaleFactor = scaleFactor;
+    this.sizeRand = sizeRand;
+    this.posRand = posRand;
+    this.shape = shape;
+    this.res = res;
+    this.spacing = this.size *2;
+  }
+
+  shapeSize(){
     //return height/3+(frameCount%(height/6))
-    return (Math.sin(frameCount*(speed/100))*100 +200)*factor
-}
-   
-function sphereGrid(sphereSize=100, gridX=5, gridY=5, gridZ=5, spacing=200){
-  let offset = (gridX - 1) * spacing / 2
-  for (let x = 0; x < gridX; x++) {
-    for (let y = 0; y < gridY; y++) {
-      for (let z = 0; z < gridZ; z++) {
-        push();
-        // Positionner chaque sphère
-        translate(
-          x * spacing - offset,
-          y * spacing - offset,
-          z * spacing - offset
-        );
-        // Couleur basée sur la position
-        // let r = map(x, 0, gridX - 1, 50, 255)
-        // let g = map(y, 0, gridY - 1, 50, 255)
-        // let b = map(z, 0, gridZ - 1, 50, 255)
-        // fill(r, g, b)
-        texture(H.get())
-        sphere(sphereSize, 32)
-        pop()
+    return (Math.sin(frameCount*(this.scaleSpeed/100))*100 +200)*this.scaleFactor
+  }
+
+  display(){
+    let offset = (this.numX - 1) * this.spacing / 2
+    for (let x = 0; x < this.numX; x++) {
+      for (let y = 0; y < this.numY; y++) {
+        for (let z = 0; z < this.numZ; z++) {
+          push();
+          // Positionner chaque sphère
+          translate(windowWidth/2, windowHeight/2)
+          translate(
+            x * this.spacing - offset,
+            y * this.spacing - offset,
+            z * this.spacing - offset
+          );
+          if (this.texture !== null) {
+            //texture(H.get())
+            texture(this.texture())
+          } else {
+            // Couleur basée sur la position
+            let r = map(x, 0, this.numX - 1, 50, 255)
+            let g = map(y, 0, this.numY - 1, 50, 255)
+            let b = map(z, 0, this.numZ - 1, 50, 255)
+            fill(r, g, b)
+          }
+          if (this.shape == "sphere"){
+            sphere(this.shapeSize(), 32)
+          } else {
+            cube()
+          }
+          pop()
+        }
       }
     }
   }
@@ -431,27 +463,30 @@ H.pd(.5)
 // Hydra video init
 //s0.initVideo("https://media.giphy.com/media/AS9LIFttYzkc0/giphy.mp4")
 
+// Hydra video init
+//s0.initVideo("https://media.giphy.com/media/AS9LIFttYzkc0/giphy.mp4")
+
 // Virtual Camera
 s1.initCam(0)
 s2.initCam(1)
 
-src(s2)
+src(s1)
 //.modulate(noize(3), .1)
 //.thresh(.2)
 .out()
 
 //noize(30, 2).thresh(()=>sin(time)).mult(osc(40, 1, [.5,2].smooth()).colorama(.1).modulate(noize())).out()
 
-//noize(3, 2).modulate(noize(), window.grad1()).out()
-
 
 ///////////////////////////// MAIN P5JS code
 
 speed=10
-let lescreatures;
+let lescreatures
+let shapeMagrid
 
 function setup() {
-    lescreatures = new Creatures(20);
+    lescreatures = new Creatures(20)
+    shapeMagrid = new ShapeGrid(3,3,3,"sphere", 50, 800)
     createCanvas(windowWidth, windowHeight, WEBGL)
     P5.zIndex(1)
     normalMaterial()
@@ -472,9 +507,10 @@ function draw() {
     //texture(H.get())
 
     //sphere(sphereSize(), 64)
-    sphereGrid(sphereSize(1, 3), 2, 2, 2, spacing=700)
+    //sphereGrid(sphereSize(1, 3), 2, 2, 2, spacing=700)
 
     lescreatures.draw()
+    shapeMagrid.display()
 }
 
 //////////////// HYDRA2
@@ -486,12 +522,15 @@ synth.s0.initP5()
 synth.s1.initCam()
 
 synth.src(synth.s0)
-  .add(src(synth.s1),()=>fader3())
+  .add(
+  	src(synth.s2).blend(src(synth.s1), ()=>fader4()),
+  	()=>fader3()
+  )
 	//.modulateRotate(synth.src(synth.o0), [0,2].fast(1).smooth())
 	//.thresh([.2,.7].smooth())
 	//.modulate(osc(8,.2),.03)
 	//.brightness(.2)
-	//.contrast(3)
+  .contrast(()=>fader5()*3)
   .modulateScale(
     synth.src(synth.o0)
     .scale(1.01),

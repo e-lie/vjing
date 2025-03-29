@@ -12,7 +12,8 @@ function draw() {
     //texture(H.get())
 
     //sphere(sphereSize(), 64)
-    sphereGrid(sphereSize(1, 3), 2, 2, 2, spacing=700)
+    //sphereGrid(sphereSize(1, 3), 2, 2, 2, spacing=700)
 
     lescreatures.draw()
+    shapeMagrid.display()
 }
