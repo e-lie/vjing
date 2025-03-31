@@ -14,4 +14,3 @@ src(s1).blend(src(s2), ()=>knob31())
 //.thresh(.2)
 .out()
 
-//noize(30, 2).thresh(()=>sin(time)).mult(osc(40, 1, [.5,2].smooth()).colorama(.1).modulate(noize())).out()
